@@ -8,7 +8,7 @@ public class PersonaManager {
 
 	public PersonaManager() {
 		super();
-		serv = new ServicioPersonaBDD();
+		serv = new ServicioPersonaArchivos();
 	}
 	
 	public void insertarPersona(Persona persona){
