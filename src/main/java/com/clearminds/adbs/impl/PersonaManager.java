@@ -1,7 +1,9 @@
 package com.clearminds.adbs.impl;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Properties;
 
 import com.clearminds.adbs.exceptions.InstanceException;
@@ -13,11 +15,8 @@ public class PersonaManager {
 
 	public PersonaManager(String property) throws InstanceException{
 		super();
-		File file = new File("config.properties");
-		Properties properties = new Properties();
 		try {
-			properties.load(new FileReader(file));
-			Class<?> clase = Class.forName("com.clearminds.adbs.impl."+((properties.getProperty(property) != null)? properties.getProperty(property) :"ServicioPersonaBDD"));
+			Class<?> clase = Class.forName("com.clearminds.adbs.impl."+(obtenerPropiedad(property)));
 			serv = (ServicioPersona)clase.newInstance();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -28,11 +27,8 @@ public class PersonaManager {
 	
 	public PersonaManager() throws InstanceException{
 		super();
-		File file = new File("config.properties");
-		Properties properties = new Properties();
 		try {
-			properties.load(new FileReader(file));
-			Class<?> clase = Class.forName("com.clearminds.adbs.impl."+((properties.getProperty("clase") != null)? properties.getProperty("clase") :"ServicioPersonaBDD"));
+			Class<?> clase = Class.forName("com.clearminds.adbs.impl."+(obtenerPropiedad(null)));
 			serv = (ServicioPersona)clase.newInstance();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -40,6 +36,25 @@ public class PersonaManager {
 		}
 		
 	}
+	
+	public String obtenerPropiedad(String property){
+		File file = new File("config.properties");
+		Properties properties = new Properties();
+		if(property == null){
+			property = "clase";
+		}
+		try {
+			properties.load(new FileReader(file));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return ((properties.getProperty(property) != null)? properties.getProperty(property) : "ServicioPersonaBDD");
+	}
+	
+	
+
 	
 	public void insertarPersona(Persona persona){
 		serv.insertar(persona);
